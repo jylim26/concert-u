@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: concert-u
+  config:
+    import: "optional:file:.env[.properties]"
+  datasource:
+    url: "jdbc:mysql://${MYSQL_HOST}:${MYSQL_PORT}/${MYSQL_DATABASE}"
+    username: "${MYSQL_USER}"
+    password: "${MYSQL_PASSWORD}"
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
