@@ -1,0 +1,24 @@
+# JetBrains IDEs
+.idea/
+*.iml
+out/
+
+# Gradle
+.gradle/
+build/
+
+# Spring Boot
+logs/
+*.log
+
+# Eclipse / STS
+.classpath
+.project
+.settings/
+
+# VS Code
+.vscode/
+
+# OS / tooling
+.DS_Store
+Thumbs.db
