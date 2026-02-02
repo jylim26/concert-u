@@ -1,1 +1,5 @@
 rootProject.name = 'concert-u'
+
+include 'concert-u.core'
+include 'concert-u.ticketing'
+include 'concert-u.queue'
