@@ -1,6 +1,6 @@
 spring:
   application:
-    name: concert-u
+    name: concert-u-ticketing
   config:
     import: "optional:file:.env[.properties]"
   datasource:
