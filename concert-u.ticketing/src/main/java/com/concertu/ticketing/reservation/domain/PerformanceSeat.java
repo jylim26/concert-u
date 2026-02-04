@@ -43,4 +43,14 @@ public class PerformanceSeat extends BaseEntity {
 	public static PerformanceSeat create(Performance performance, Seat seat) {
 		return new PerformanceSeat(null, performance, seat, PerformanceSeatStatus.AVAILABLE, null, null);
 	}
+
+	public boolean isAvailable() {
+		return status == PerformanceSeatStatus.AVAILABLE;
+	}
+
+	public void hold(Long userId, Instant now) {
+		this.status = PerformanceSeatStatus.HELD;
+		this.reservedBy = userId;
+		this.reservedAt = now;
+	}
 }
