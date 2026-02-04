@@ -21,7 +21,7 @@ public class Seat extends BaseEntity {
 	private Long id;
 
 	@Column(name = "seat_no", nullable = false)
-	private String seatNo;
+	private Long seatNo;
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "venue_id", nullable = false)
@@ -31,7 +31,7 @@ public class Seat extends BaseEntity {
 	@JoinColumn(name = "grade_id", nullable = false)
 	private SeatGrade grade;
 
-	public static Seat create(String seatNo, Venue venue, SeatGrade grade) {
+	public static Seat create(Long seatNo, Venue venue, SeatGrade grade) {
 		return new Seat(null, seatNo, venue, grade);
 	}
 }
