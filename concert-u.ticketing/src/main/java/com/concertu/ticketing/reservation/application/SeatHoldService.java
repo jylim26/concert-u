@@ -1,30 +1,22 @@
 package com.concertu.ticketing.reservation.application;
 
-import com.concertu.ticketing.reservation.domain.PerformanceSeat;
-import com.concertu.ticketing.reservation.domain.exception.*;
-import com.concertu.ticketing.reservation.infra.PerformanceSeatJpaRepository;
-import java.time.*;
+import java.util.concurrent.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class SeatHoldService {
 
-	private final PerformanceSeatJpaRepository performanceSeatRepository;
-	private final Clock clock;
+	private final SeatHoldTxService seatHoldTxService;
+	private final ConcurrentMap<Long, Object> seatLocks = new ConcurrentHashMap<>();
 
-	@Transactional
 	public void hold(Long performanceId, Long seatId, Long userId) {
-		PerformanceSeat performanceSeat = performanceSeatRepository
-				.findByPerformanceIdAndSeatId(performanceId, seatId)
-				.orElseThrow(() -> new PerformanceSeatNotFoundException(performanceId, seatId));
+		Object lock = seatLocks.computeIfAbsent(seatId, key -> new Object());
 
-		if (!performanceSeat.isAvailable()) {
-			throw new SeatNotAvailableException(performanceId, seatId);
+		synchronized (lock) {
+			// 락 대기 시간 방지를 위해 별도 트랜잭션으로 분리
+			seatHoldTxService.hold(performanceId, seatId, userId);
 		}
-
-		performanceSeat.hold(userId, Instant.now(clock));
 	}
 }
