@@ -31,40 +31,40 @@ k6 run scripts/k6/hold-same-seat.js
 - 응답 시간 (p95): 289.22ms
 
 ```bash
-     execution: local
-        script: hold-same-seat.js
-        output: -
+ execution: local
+    script: hold-same-seat.js
+    output: -
 
-     scenarios: (100.00%) 1 scenario, 100 max VUs, 40s max duration (incl. graceful stop):
-              * once: 1 iterations for each of 100 VUs (maxDuration: 10s, gracefulStop: 30s)
+ scenarios: (100.00%) 1 scenario, 100 max VUs, 40s max duration (incl. graceful stop):
+          * once: 1 iterations for each of 100 VUs (maxDuration: 10s, gracefulStop: 30s)
 
 
 
-  █ TOTAL RESULTS
+█ TOTAL RESULTS
 
-    checks_total.......: 100     321.683811/s
-    checks_succeeded...: 100.00% 100 out of 100
-    checks_failed......: 0.00%   0 out of 100
+checks_total.......: 100     321.683811/s
+checks_succeeded...: 100.00% 100 out of 100
+checks_failed......: 0.00%   0 out of 100
 
-    ✓ 200 or 409
+✓ 200 or 409
 
-    CUSTOM
-    seat_hold_status_200...........: 10     32.168381/s
-    seat_hold_status_409...........: 90     289.51543/s
+CUSTOM
+seat_hold_status_200...........: 10     32.168381/s
+seat_hold_status_409...........: 90     289.51543/s
 
-    HTTP
-    http_req_duration..............: avg=199.54ms min=54.59ms med=207.51ms max=296.32ms p(90)=283.12ms p(95)=289.22ms
-      { expected_response:true }...: avg=94.78ms  min=54.59ms med=95.61ms  max=137.8ms  p(90)=130.88ms p(95)=134.34ms
-    http_req_failed................: 90.00% 90 out of 100
-    http_reqs......................: 100    321.683811/s
+HTTP
+http_req_duration..............: avg=199.54ms min=54.59ms med=207.51ms max=296.32ms p(90)=283.12ms p(95)=289.22ms
+  { expected_response:true }...: avg=94.78ms  min=54.59ms med=95.61ms  max=137.8ms  p(90)=130.88ms p(95)=134.34ms
+http_req_failed................: 90.00% 90 out of 100
+http_reqs......................: 100    321.683811/s
 
-    EXECUTION
-    iteration_duration.............: avg=207.31ms min=57.39ms med=213.95ms max=306.29ms p(90)=289.31ms p(95)=298.12ms
-    iterations.....................: 100    321.683811/s
+EXECUTION
+iteration_duration.............: avg=207.31ms min=57.39ms med=213.95ms max=306.29ms p(90)=289.31ms p(95)=298.12ms
+iterations.....................: 100    321.683811/s
 
-    NETWORK
-    data_received..................: 15 kB  48 kB/s
-    data_sent......................: 17 kB  54 kB/s
+NETWORK
+data_received..................: 15 kB  48 kB/s
+data_sent......................: 17 kB  54 kB/s
 ```
 
 > K6는 기본적으로 409 응답을 에러로 간주하여 `http_req_failed` 지표에 반영됩니다.
