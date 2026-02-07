@@ -1,6 +1,17 @@
 spring:
   application:
     name: concert-u-queue
+  config:
+    import: "optional:file:.env[.properties]"
+  data:
+    redis:
+      host: ${REDIS_HOST:127.0.0.1}
+      port: ${REDIS_PORT:6379}
+
+queue:
+  activate:
+    batch-size: ${QUEUE_ACTIVATE_BATCH_SIZE:50}
+    fixed-delay-ms: ${QUEUE_ACTIVATE_DELAY_MS:1000}
 
 management:
   endpoints:
