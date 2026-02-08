@@ -1,73 +1,116 @@
 {
-  "title": "Concert-U Overview",
+  "title": "Concert-U Load Test",
   "timezone": "browser",
-  "schemaVersion": 38,
+  "schemaVersion": 39,
   "version": 1,
   "refresh": "5s",
   "panels": [
     {
       "type": "timeseries",
-      "title": "HTTP p95 (ticketing)",
+      "title": "App RPS",
       "datasource": "Prometheus",
-      "gridPos": { "x": 0, "y": 0, "w": 12, "h": 6 },
+      "gridPos": { "x": 0, "y": 0, "w": 8, "h": 6 },
       "targets": [
         {
-          "expr": "histogram_quantile(0.95, sum(rate(http_server_requests_seconds_bucket{job=\"ticketing\"}[1m])) by (le))"
+          "expr": "sum(rate(http_server_requests_seconds_count{job=~\"ticketing-service|queue-service\"}[1m]))"
         }
       ]
     },
     {
       "type": "timeseries",
-      "title": "HTTP p95 (queue)",
+      "title": "App p95",
       "datasource": "Prometheus",
-      "gridPos": { "x": 12, "y": 0, "w": 12, "h": 6 },
+      "gridPos": { "x": 8, "y": 0, "w": 8, "h": 6 },
       "targets": [
         {
-          "expr": "histogram_quantile(0.95, sum(rate(http_server_requests_seconds_bucket{job=\"queue\"}[1m])) by (le))"
+          "expr": "histogram_quantile(0.95, sum(rate(http_server_requests_seconds_bucket{job=~\"ticketing-service|queue-service\"}[1m])) by (le))"
         }
       ]
     },
     {
       "type": "timeseries",
-      "title": "Hikari Active Connections (ticketing)",
+      "title": "App p99",
       "datasource": "Prometheus",
-      "gridPos": { "x": 0, "y": 6, "w": 12, "h": 6 },
+      "gridPos": { "x": 16, "y": 0, "w": 8, "h": 6 },
       "targets": [
         {
-          "expr": "sum(hikaricp_connections_active{job=\"ticketing\"})"
+          "expr": "histogram_quantile(0.99, sum(rate(http_server_requests_seconds_bucket{job=~\"ticketing-service|queue-service\"}[1m])) by (le))"
         }
       ]
     },
     {
       "type": "timeseries",
-      "title": "JVM Heap Used (ticketing)",
+      "title": "HTTP 409 Ratio (%)",
       "datasource": "Prometheus",
-      "gridPos": { "x": 12, "y": 6, "w": 12, "h": 6 },
+      "gridPos": { "x": 0, "y": 6, "w": 8, "h": 6 },
       "targets": [
         {
-          "expr": "sum(jvm_memory_used_bytes{job=\"ticketing\", area=\"heap\"})"
+          "expr": "100 * sum(rate(http_server_requests_seconds_count{job=~\"ticketing-service|queue-service\",status=\"409\"}[1m])) / clamp_min(sum(rate(http_server_requests_seconds_count{job=~\"ticketing-service|queue-service\"}[1m])), 0.0001)"
         }
       ]
     },
     {
       "type": "timeseries",
-      "title": "MySQL Connections",
+      "title": "Hikari Active (max over 1m)",
       "datasource": "Prometheus",
-      "gridPos": { "x": 0, "y": 12, "w": 12, "h": 6 },
+      "gridPos": { "x": 8, "y": 6, "w": 8, "h": 6 },
       "targets": [
         {
-          "expr": "mysql_global_status_threads_connected"
+          "expr": "sum(max_over_time(hikaricp_connections_active{job=~\"ticketing-service|queue-service\"}[1m]))"
         }
       ]
     },
     {
       "type": "timeseries",
-      "title": "Redis Ops/sec",
+      "title": "Hikari Pending / Max",
       "datasource": "Prometheus",
-      "gridPos": { "x": 12, "y": 12, "w": 12, "h": 6 },
+      "gridPos": { "x": 16, "y": 6, "w": 8, "h": 6 },
       "targets": [
         {
-          "expr": "rate(redis_commands_processed_total[1m])"
+          "expr": "sum(max_over_time(hikaricp_connections_pending{job=~\"ticketing-service|queue-service\"}[1m]))",
+          "legendFormat": "pending"
+        },
+        {
+          "expr": "sum(hikaricp_connections_max{job=~\"ticketing-service|queue-service\"})",
+          "legendFormat": "max"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "MySQL Threads Running / Connected",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 0, "y": 12, "w": 8, "h": 6 },
+      "targets": [
+        {
+          "expr": "mysql_global_status_threads_running{job=\"mysql\"}",
+          "legendFormat": "running"
+        },
+        {
+          "expr": "mysql_global_status_threads_connected{job=\"mysql\"}",
+          "legendFormat": "connected"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "InnoDB Row Lock Waits/sec",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 8, "y": 12, "w": 8, "h": 6 },
+      "targets": [
+        {
+          "expr": "rate(mysql_global_status_innodb_row_lock_waits{job=\"mysql\"}[1m])"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "MySQL Host CPU Usage (%)",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 16, "y": 12, "w": 8, "h": 6 },
+      "targets": [
+        {
+          "expr": "100 * (1 - avg(rate(node_cpu_seconds_total{job=\"node-mysql\",mode=\"idle\"}[1m])) by (instance))"
         }
       ]
     }

@@ -40,8 +40,12 @@ public class PerformanceSeat extends BaseEntity {
 	@Column(name = "reserved_at")
 	private Instant reservedAt;
 
+	@Version
+	@Column(nullable = false)
+	private Long version;
+
 	public static PerformanceSeat create(Performance performance, Seat seat) {
-		return new PerformanceSeat(null, performance, seat, PerformanceSeatStatus.AVAILABLE, null, null);
+		return new PerformanceSeat(null, performance, seat, PerformanceSeatStatus.AVAILABLE, null, null, null);
 	}
 
 	public boolean isAvailable() {

@@ -2,20 +2,25 @@ global:
   scrape_interval: 5s
 
 scrape_configs:
-  - job_name: "ticketing"
+  - job_name: "ticketing-service"
     metrics_path: "/actuator/prometheus"
     static_configs:
-      - targets: ["host.docker.internal:8080"]
+      - targets:
+          - "54.180.241.7:8080"
+          - "43.203.199.123:8080"
 
-  - job_name: "queue"
+  - job_name: "queue-service"
     metrics_path: "/actuator/prometheus"
     static_configs:
-      - targets: ["host.docker.internal:8081"]
-
-  - job_name: "redis"
-    static_configs:
-      - targets: ["redis-exporter:9121"]
+      - targets:
+          - "43.201.58.36:8080"
 
   - job_name: "mysql"
     static_configs:
-      - targets: ["mysql-exporter:9104"]
+      - targets:
+          - "42.78.199.130:9104"
+
+  - job_name: "node-mysql"
+    static_configs:
+      - targets:
+          - "42.78.199.130:9100"

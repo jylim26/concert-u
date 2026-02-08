@@ -1,25 +1,4 @@
-version: "3.8"
-
 services:
-  mysql:
-    image: mysql:8.0
-    container_name: concertu-mysql
-    ports:
-      - "${MYSQL_PORT}:3306"
-    environment:
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-    volumes:
-      - mysql_data:/var/lib/mysql
-
-  redis:
-    image: redis:7.2
-    container_name: concertu-redis
-    ports:
-      - "6379:6379"
-
   prometheus:
     image: prom/prometheus:v2.53.1
     container_name: concertu-prometheus
@@ -27,27 +6,11 @@ services:
       - "9090:9090"
     volumes:
       - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    restart: unless-stopped
 
   grafana:
     image: grafana/grafana:11.1.0
     container_name: concertu-grafana
     ports:
       - "3000:3000"
-
-  redis-exporter:
-    image: oliver006/redis_exporter:v1.63.0
-    container_name: concertu-redis-exporter
-    command: ["--redis.addr=redis://redis:6379"]
-    ports:
-      - "9121:9121"
-
-  mysql-exporter:
-    image: prom/mysqld-exporter:v0.15.1
-    container_name: concertu-mysql-exporter
-    environment:
-      DATA_SOURCE_NAME: "${MYSQL_USER}:${MYSQL_PASSWORD}@(${MYSQL_HOST}:${MYSQL_PORT})/"
-    ports:
-      - "9104:9104"
-
-volumes:
-  mysql_data:
+    restart: unless-stopped

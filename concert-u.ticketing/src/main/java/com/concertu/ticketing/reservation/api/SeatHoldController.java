@@ -24,5 +24,17 @@ public class SeatHoldController {
 		seatHoldService.hold(performanceId, seatId, request.userId());
 	}
 
+	@PostMapping("/{seatId}/hold/pessimistic")
+	public void holdWithPessimistic(
+			@PathVariable Long performanceId, @PathVariable Long seatId, @RequestBody HoldSeatRequest request) {
+		seatHoldService.holdWithPessimistic(performanceId, seatId, request.userId());
+	}
+
+	@PostMapping("/{seatId}/hold/optimistic")
+	public void holdWithOptimistic(
+			@PathVariable Long performanceId, @PathVariable Long seatId, @RequestBody HoldSeatRequest request) {
+		seatHoldService.holdWithOptimistic(performanceId, seatId, request.userId());
+	}
+
 	public record HoldSeatRequest(Long userId) {}
 }

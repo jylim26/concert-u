@@ -7,6 +7,9 @@ spring:
     url: "jdbc:mysql://${MYSQL_HOST}:${MYSQL_PORT}/${MYSQL_DATABASE}"
     username: "${MYSQL_USER}"
     password: "${MYSQL_PASSWORD}"
+    hikari:
+      maximum-pool-size: 50
+      minimum-idle: 20
   jpa:
     hibernate:
       ddl-auto: create
@@ -15,6 +18,10 @@ spring:
         format_sql: true
 
 management:
+  metrics:
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
   endpoints:
     web:
       exposure:
