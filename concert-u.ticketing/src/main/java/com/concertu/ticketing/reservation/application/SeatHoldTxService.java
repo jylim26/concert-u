@@ -16,13 +16,23 @@ public class SeatHoldTxService {
 	private final Clock clock;
 
 	@Transactional
-	public void hold(Long performanceId, Long seatId, Long userId) {
+	public void holdPessimistic(Long performanceId, Long seatId, Long userId) {
+		PerformanceSeat performanceSeat = performanceSeatRepository
+				.findForUpdateByPerformanceIdAndSeatId(performanceId, seatId)
+				.orElseThrow(() -> new PerformanceSeatNotFoundException(performanceId, seatId));
+		holdSeat(performanceId, seatId, userId, performanceSeat);
+	}
+
+	@Transactional
+	public void holdOptimistic(Long performanceId, Long seatId, Long userId) {
 		PerformanceSeat performanceSeat = performanceSeatRepository
 				.findByPerformanceIdAndSeatId(performanceId, seatId)
 				.orElseThrow(() -> new PerformanceSeatNotFoundException(performanceId, seatId));
+		holdSeat(performanceId, seatId, userId, performanceSeat);
+	}
 
+	private void holdSeat(Long performanceId, Long seatId, Long userId, PerformanceSeat performanceSeat) {
 		if (!performanceSeat.isAvailable()) throw new SeatNotAvailableException(performanceId, seatId);
 		performanceSeat.hold(userId, Instant.now(clock));
 	}
 }
-
